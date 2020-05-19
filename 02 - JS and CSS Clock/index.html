@@ -62,13 +62,57 @@
       background: black;
       position: absolute;
       top: 50%;
+      left: 50%;
+      transform-origin: 0%;
+      transform: rotate(270deg);
+      transition: all 0.05s;
+      transition-timing-function: ease-in-out;
     }
 
+    .hour-hand {
+      width: 32%
+    }
+
+    .min-hand {
+      width: 45%
+    }
+
+    .topOfClock {
+      transition: all 0s;
+    }
   </style>
 
   <script>
+    const hourHand = document.querySelector('.hour-hand')
+    const minuteHand = document.querySelector('.min-hand')
+    const secondHand = document.querySelector('.second-hand')
 
+    const setDate = () => {
+      const now = new Date()
+      
+      // Seconds
+      const seconds = now.getSeconds()
+      const secondsDegrees = ((seconds / 60) * 360) + 270 // we add 270 because the initial style, to make it point up, sets rotation to 270deg
+      secondHand.style.transform = `rotate(${secondsDegrees}deg)`
 
+      // Minutes
+      const minutes = now.getMinutes()
+      const minutesDegrees = ((minutes / 60) * 360) + 270 // we add 270 because the initial style, to make it point up, sets rotation to 270deg
+      minuteHand.style.transform = `rotate(${minutesDegrees}deg)`
+
+      // Hours
+      let hours = now.getHours()
+      if (hours >= 12) hours = hours - 12
+      let hoursDegrees = ((hours / 12) * 360) + 270 // we add 270 because the initial style, to make it point up, sets rotation to 270deg
+      hoursDegrees = hoursDegrees + ((minutes / 12 / 60) * 360) // this will calculate hour far into the hour we are, i.e. how far the hour hand is between both the current and next hour
+      hourHand.style.transform = `rotate(${hoursDegrees}deg)`
+
+      // This is required to stop a jumpy transform at the top of the minute
+      if (seconds === 0) secondHand.classList.add('topOfClock')
+      else if (seconds === 1) secondHand.classList.remove('topOfClock')
+    }
+
+    setInterval(setDate, 1000)
   </script>
 </body>
 </html>

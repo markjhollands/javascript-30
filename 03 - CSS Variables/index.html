@@ -21,6 +21,27 @@
   <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
 
   <style>
+    /*
+      Add variable declaration and defaults
+    */
+    :root {
+      --base: #ffc600;
+      --spacing: 10px;
+      --blur: 10px;
+    }
+
+    /*
+      Use the variables in the CSS where required
+    */
+    img {
+      padding: var(--spacing);
+      background: var(--base);
+      filter: blur(var(--blur));
+    }
+
+    .hl {
+      color: var(--base);
+    }
 
     /*
       misc styles, nothing to do with CSS variables
@@ -45,6 +66,15 @@
   </style>
 
   <script>
+    const inputs = document.querySelectorAll('.controls input')
+
+    const handleUpdate = e => {
+      const suffix = e.target.dataset.sizing || ''
+      document.documentElement.style.setProperty(`--${e.target.name}`, e.target.value + suffix)
+    }
+
+    inputs.forEach(input => input.addEventListener('change', handleUpdate))
+    inputs.forEach(input => input.addEventListener('mousemove', handleUpdate))
   </script>
 
 </body>

@@ -8,12 +8,13 @@ const progressBar = player.querySelector('.progress__filled');
 const toggle = player.querySelector('.toggle');
 const skipButtons = player.querySelectorAll('[data-skip]');
 const ranges = player.querySelectorAll('.player__slider');
+const fullScreen = player.querySelector('.full__screen');
 
 /***********************/
 /* Build our functions */
 /***********************/
 const togglePlay = () => video.paused ? video.play() : video.pause();
-const updateButton = e => toggle.textContent = e.target.paused ? '►' : '❚ ❚';
+const updateButton = e => toggle.innerHTML = e.target.paused ? '<i class="fas fa-play"></i>' : '<i class="fas fa-pause"></i>';
 const skip = e => video.currentTime += parseFloat(e.target.dataset.skip);
 const handleRangeUpdate = e => video[e.target.name] = e.target.value;
 const handleProgress = () => {
@@ -21,6 +22,36 @@ const handleProgress = () => {
     progressBar.style.flexBasis = `${percent}%`;
 }
 const scrub = e => video.currentTime = e.offsetX / progress.offsetWidth * video.duration;
+const toggleFullScreen = () => {
+    // We do not need to handle exit full screen because we have not disabled native
+    // controls for full screen mode.
+    //
+    // As this is education, and for reference, I have added the required code.
+
+    if (document.fullscreenElement && document.fullscreenElement.nodeName == 'VIDEO') {
+        // in full screen - exit full screen
+        if (typeof document.exitFullscreen === "function") {
+            document.exitFullscreen();
+        } else if (typeof document.mozCancelFullScreen === "function") { // Firefox
+            document.mozCancelFullScreen();
+        } else if (typeof document.webkitExitFullscreen === "function") { // Chrome, Safari and Opera
+            document.webkitExitFullscreen();
+        } else if (typeof document.msExitFullscreen === "function") { // IE and Edge
+            document.msExitFullscreen();
+        }
+    } else {
+        // not in full screen - go full screen
+        if (typeof video.requestFullscreen === "function") {
+            video.requestFullscreen();
+        } else if (typeof video.mozRequestFullScreen === "function") { // Firefox
+            video.mozRequestFullScreen();
+        } else if (typeof video.webkitRequestFullscreen === "function") { // Chrome, Safari and Opera
+            video.webkitRequestFullscreen();
+        } else if (typeof video.msRequestFullscreen === "function") { // IE and Edge
+            video.msRequestFullscreen();
+        }
+    }
+}
 
 /*******************************/
 /* Hook up the event listeners */
@@ -42,3 +73,4 @@ progress.addEventListener('mousemove', e => mousedown && scrub(e));
 toggle.addEventListener('click', togglePlay);
 skipButtons.forEach(button => button.addEventListener('click', skip));
 ranges.forEach(range => ['change', 'mousemove'].forEach(event => range.addEventListener(event, handleRangeUpdate)));
+fullScreen.addEventListener('click', toggleFullScreen);

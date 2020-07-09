@@ -8,13 +8,27 @@
 
   <script>
     // start with strings, numbers and booleans
+    let age = 100;
+    let age2 = age;
+    console.log(age, age2);
+    age = 200;
+    console.log(age, age2);
+
+    let name = 'Mark';
+    let name2 = name;
+    console.log(name, name2);
+    name = 'John';
+    console.log(name, name2);
 
     // Let's say we have an array
     const players = ['Wes', 'Sarah', 'Ryan', 'Poppy'];
 
     // and we want to make a copy of it.
-
+    const team = players;
+    console.log(players, team);
     // You might think we can just do something like this:
+    team[3] = "Lux";
+    console.log(players, team);
 
     // however what happens when we update that array?
 
@@ -25,12 +39,25 @@
     // Why? It's because that is an array reference, not an array copy. They both point to the same array!
 
     // So, how do we fix this? We take a copy instead!
+    const team2 = players.slice();
+    team2[3] = "Tux";
+    console.log(players, team2);
 
     // one way
 
     // or create a new array and concat the old one in
+    const team3 = [].concat(players);
+    team3[3] = "Pux";
+    console.log(players, team3);
 
     // or use the new ES6 Spread
+    const team4 = [...players];
+    team4[3] = "Sux";
+    console.log(players, team4);
+
+    const team5 = Array.from(players);
+    team5[3] = "Vux";
+    console.log(players, team5);
 
     // now when we update it, the original one isn't changed
 
@@ -43,12 +70,46 @@
     };
 
     // and think we make a copy:
+    const captain = person;
+    captain.number = 99;
+    console.log(person, captain);
 
     // how do we take a copy instead?
+    const cap2 = Object.assign({}, person, { age: 55 });
+    console.log(person, cap2);
 
-    // We will hopefully soon see the object ...spread
+    // We will hopefully soon see the object ...spread - WE HAVE THIS NOW... works in Chrome
+    const cap3 = {...person};
+    cap3.age = 38;
+    console.log(person, cap3);
 
     // Things to note - this is only 1 level deep - both for Arrays and Objects. lodash has a cloneDeep method, but you should think twice before using it.
+    const wes = {
+      name: 'Wes',
+      age: 100,
+      social: {
+        twitter: '@wesbos',
+        facebook: 'wesbos.developer'
+      }
+    };
+    console.log(wes);
+
+    const dev = Object.assign({}, wes);
+    dev.name = 'Wesley';
+    console.log(wes, dev);
+
+    // Above is fine, dev is changed, wes is not... however...
+
+    dev.social.twitter = '@coolman';
+    console.log(wes.social, dev.social);
+
+    // DAMN!!! It changed both. You would need to deep clone to clone all levels of Object.
+    // One workaround could be...
+    const dev2 = JSON.parse(JSON.stringify(dev));
+    dev2.social.twitter = '@coolman2';
+    console.log(dev.social, dev2.social);
+
+    // Above may have performance issues, so maybe use with caution.
 
   </script>
 

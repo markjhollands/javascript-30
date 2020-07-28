@@ -20,6 +20,10 @@
       <li>Loading Tapas...</li>
     </ul>
     <form class="add-items">
+      <input type="button" name="select-all-items" value="Select All">
+      <input type="button" name="deselect-all-items" value="Deselect All">
+      <input type="button" name="clear-items" value="Clear">
+      <br/><br/>
       <input type="text" name="item" placeholder="Item Name" required>
       <input type="submit" value="+ Add Item">
     </form>
@@ -43,11 +47,23 @@
     e.target.reset()
   }
 
+  // Clear all items
+  const clearItems = () => {
+    items.length = 0
+    saveItems(items, itemsList)
+  }
+
   // Set or unset an items selected status
   const toggleDone = e => {
     if (!e.target.matches('input')) return //skip this unless it's an input
     const index = e.target.dataset.index
     items[index].done = !items[index].done
+    saveItems(items, itemsList)
+  }
+
+  // Set or unset all items selected status
+  const toggleDoneAll = e => {
+    items.forEach(item => item.done = (e.target.name === 'select-all-items'))
     saveItems(items, itemsList)
   }
 
@@ -71,6 +87,15 @@
 
   addItems.addEventListener('submit', addItem)
   itemsList.addEventListener('click', toggleDone)
+
+  const clearItemsButton = (addItems.querySelector('[name=clear-items]'))
+  clearItemsButton.addEventListener('click', clearItems)
+
+  const selectAllItemsButton = (addItems.querySelector('[name=select-all-items]'))
+  selectAllItemsButton.addEventListener('click', toggleDoneAll)
+
+  const deselectAllItemsButton = (addItems.querySelector('[name=deselect-all-items]'))
+  deselectAllItemsButton.addEventListener('click', toggleDoneAll)
 
   // Populate List on page load
   populateList(items, itemsList)
